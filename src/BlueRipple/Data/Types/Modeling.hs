@@ -31,7 +31,6 @@ import qualified Data.Vinyl.Derived                    as V
 import qualified Data.Vinyl.TypeLevel                    as V
 import qualified Data.Vector.Unboxed           as UVec
 import           Data.Vector.Unboxed.Deriving   (derivingUnbox)
-import           Data.Type.Equality (type (~))
 import qualified Data.Default as Def
 
 -- Flat for caching

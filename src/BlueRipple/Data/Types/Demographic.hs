@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE DerivingStrategies     #-}
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs             #-}
@@ -20,37 +21,25 @@ module BlueRipple.Data.Types.Demographic
   )
 where
 
-import qualified BlueRipple.Data.Types.Geographic as BR
+--import qualified BlueRipple.Data.Types.Geographic as BR
 import qualified BlueRipple.Data.Keyed         as K
 
 import qualified Control.Foldl                 as FL
 import Control.Lens (view, (^.))
-import qualified Control.MapReduce             as MR
-import qualified Data.Array                    as A
 import qualified Data.Ix as Ix
-import qualified Data.Map                      as M
 import qualified Data.Text                     as T
-import qualified Data.Set                      as Set
-import Data.Type.Equality (type (~))
 import qualified Flat
 import qualified Frames                        as F
 import qualified Frames.Melt                   as F
 import qualified Frames.Streamly.InCore        as FSI
 import qualified Frames.Streamly.TH            as FTH
-import qualified Frames.Folds                  as FF
-import qualified Frames.MapReduce              as FMR
-import qualified Frames.Transform              as FT
 import qualified Data.Vector.Unboxed           as UVec
 import           Data.Vector.Unboxed.Deriving   (derivingUnbox)
-import           Data.Vinyl.TypeLevel           (type (++))
 import qualified Data.Vinyl                    as V
-import qualified Data.Vinyl.TypeLevel          as V
 import           Data.Discrimination            ( Grouping )
 import qualified Frames.Visualization.VegaLite.Data
                                                as FV
 import qualified Graphics.Vega.VegaLite        as GV
-import qualified Relude.Extra as Relude
-import qualified Data.Array as Array
 
 import qualified Numeric
 
@@ -60,7 +49,7 @@ import GHC.TypeLits (Symbol)
 -- Grouping for leftJoin
 -- FiniteSet for composition of aggregations
 
-data DemographicGrouping = ASE | ASR | ASER | ASER4 | ASER5 deriving stock (Enum, Bounded, Eq, Ord, A.Ix, Show, Generic)
+data DemographicGrouping = ASE | ASR | ASER | ASER4 | ASER5 deriving stock (Enum, Bounded, Eq, Ord, Ix.Ix, Show, Generic)
 instance Flat.Flat DemographicGrouping
 instance Grouping DemographicGrouping
 instance K.FiniteSet DemographicGrouping
@@ -76,7 +65,7 @@ FTH.declareColumn "DemographicGroupingC" ''DemographicGrouping
 instance FV.ToVLDataValue (F.ElField DemographicGroupingC) where
   toVLDataValue x = (toText $ V.getLabel x, GV.Str $ show $ V.getField x)
 
-data PopCountOfT = PC_All | PC_Citizen | PC_VAP deriving stock (Enum, Bounded, Eq, Ord, A.Ix, Show, Generic)
+data PopCountOfT = PC_All | PC_Citizen | PC_VAP deriving stock (Enum, Bounded, Eq, Ord, Ix.Ix, Show, Generic)
 instance Flat.Flat PopCountOfT
 instance Grouping PopCountOfT
 instance K.FiniteSet PopCountOfT
@@ -157,7 +146,7 @@ combinePWDRecs :: (Int -> Int -> (forall a. Num a => a -> a -> a))
 combinePWDRecs f r1 r2 = (\(x, y) -> x F.&: y F.&: V.RNil) $ combinePWDensities f (r1 ^. popCount, r1 ^. pWPopPerSqMile) (r2 ^. popCount, r2 ^. pWPopPerSqMile)
 {-# INLINEABLE combinePWDRecs #-}
 
-data Sex = Female | Male deriving stock (Enum, Bounded, Eq, Ord, A.Ix, Show, Generic)
+data Sex = Female | Male deriving stock (Enum, Bounded, Eq, Ord, Ix.Ix, Show, Generic)
 deriving anyclass instance Hashable Sex
 instance Flat.Flat Sex
 instance Grouping Sex
@@ -174,7 +163,7 @@ instance FV.ToVLDataValue (F.ElField SexC) where
   toVLDataValue x = (toText $ V.getLabel x, GV.Str $ show $ V.getField x)
 
 --
-data SimpleRace = NonWhite | White deriving stock (Eq, Ord, Enum, Bounded, A.Ix, Show, Generic)
+data SimpleRace = NonWhite | White deriving stock (Eq, Ord, Enum, Bounded, Ix.Ix, Show, Generic)
 instance Flat.Flat SimpleRace
 instance Grouping SimpleRace
 instance K.FiniteSet SimpleRace
@@ -190,7 +179,7 @@ instance FV.ToVLDataValue (F.ElField SimpleRaceC) where
   toVLDataValue x = (toText $ V.getLabel x, GV.Str $ show $ V.getField x)
 
 
-data Citizen = NonCitizen | Citizen deriving stock (Eq, Ord, Enum, Bounded, A.Ix, Show, Generic)
+data Citizen = NonCitizen | Citizen deriving stock (Eq, Ord, Enum, Bounded, Ix.Ix, Show, Generic)
 deriving anyclass instance Hashable Citizen
 instance Flat.Flat Citizen
 instance Grouping Citizen
@@ -203,7 +192,7 @@ type instance FSI.VectorFor Citizen = UVec.Vector
 
 FTH.declareColumn "CitizenC" ''Citizen
 
-data CollegeGrad = NonGrad | Grad deriving stock (Eq, Ord, Enum, Bounded, A.Ix, Show, Generic)
+data CollegeGrad = NonGrad | Grad deriving stock (Eq, Ord, Enum, Bounded, Ix.Ix, Show, Generic)
 deriving anyclass instance Hashable CollegeGrad
 instance Flat.Flat CollegeGrad
 instance Grouping CollegeGrad
@@ -222,7 +211,7 @@ instance FV.ToVLDataValue (F.ElField CollegeGradC) where
 
 FTH.declareColumn "InCollege" ''Bool
 
-data SimpleAge = Under | EqualOrOver deriving stock (Eq, Ord, Enum, Bounded, A.Ix, Show, Generic)
+data SimpleAge = Under | EqualOrOver deriving stock (Eq, Ord, Enum, Bounded, Ix.Ix, Show, Generic)
 instance Flat.Flat SimpleAge
 instance Grouping SimpleAge
 instance K.FiniteSet SimpleAge
@@ -365,7 +354,7 @@ collegeGrad ed
   | ed == AS = NonGrad
   | otherwise = Grad
 
-data Education4 = E4_NonHSGrad | E4_HSGrad | E4_SomeCollege | E4_CollegeGrad deriving stock (Show, Enum, Bounded, Eq, Ord, Array.Ix, Generic)
+data Education4 = E4_NonHSGrad | E4_HSGrad | E4_SomeCollege | E4_CollegeGrad deriving stock (Show, Enum, Bounded, Eq, Ord, Ix.Ix, Generic)
 instance Flat.Flat Education4
 instance Grouping Education4
 instance K.FiniteSet Education4
@@ -739,7 +728,7 @@ type instance FSI.VectorFor Evangelical = UVec.Vector
 
 FTH.declareColumn "EvangelicalC" ''Evangelical
 
-
+{-
 type CatColsASER = '[SimpleAgeC, SexC, CollegeGradC, SimpleRaceC]
 catKeyASER :: SimpleAge -> Sex -> CollegeGrad -> SimpleRace -> F.Record CatColsASER
 catKeyASER a s e r = a F.&: s F.&: e F.&: r F.&: V.RNil
@@ -1081,3 +1070,4 @@ typedASETurnout r = do
     key
     turnoutASELabelMap
   return $ r `V.rappend` typedCols
+-}
