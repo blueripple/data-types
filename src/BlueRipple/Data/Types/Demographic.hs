@@ -728,7 +728,6 @@ type instance FSI.VectorFor Evangelical = UVec.Vector
 
 FTH.declareColumn "EvangelicalC" ''Evangelical
 
-{-
 type CatColsASER = '[SimpleAgeC, SexC, CollegeGradC, SimpleRaceC]
 catKeyASER :: SimpleAge -> Sex -> CollegeGrad -> SimpleRace -> F.Record CatColsASER
 catKeyASER a s e r = a F.&: s F.&: e F.&: r F.&: V.RNil
@@ -773,7 +772,7 @@ allCatKeysASER4 :: [F.Record CatColsASER4]
 allCatKeysASER4 = [catKeyASER4 a s e r | a <- [EqualOrOver, Under], e <- [NonGrad, Grad], s <- [Female, Male], r <- [minBound..]]
 
 type CatColsLanguage = '[LanguageC, SpeaksEnglishC]
-
+{-
 asrTurnoutLabel' :: (Age5, Sex, TurnoutRace) -> T.Text
 asrTurnoutLabel' (a, s, r) = turnoutRaceLabel r <> sexLabel s <> age5Label a
 
