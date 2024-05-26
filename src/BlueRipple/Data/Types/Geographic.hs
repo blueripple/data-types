@@ -47,6 +47,8 @@ FTH.declareColumn "CountyFIPS" ''Int
 
 FTH.declareColumn "PUMA" ''Int
 
+FTH.declareColumn "TractId" ''Int
+
 FTH.declareColumn "CongressionalDistrict" ''Int
 
 data DistrictType = Congressional | StateUpper | StateLower deriving stock (Show, Enum, Bounded, Eq, Ord, Generic)
