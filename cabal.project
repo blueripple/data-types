@@ -12,6 +12,7 @@ allow-newer: polysemy-zoo:ghc-prim, streamly-core
 flags: +streamly9
 
 import: ../cabal_repo_imports/data-tools.project
+import: ../cabal_repo_imports/post-tools.project
 import: ../cabal_repo_imports/knit-haskell.project
 import: ../cabal_repo_imports/Frames-streamly.project
 import: ../cabal_repo_imports/Frames-serialize.project

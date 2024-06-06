@@ -52,16 +52,17 @@ FTH.declareColumn "TractGeoId" ''Int
 
 FTH.declareColumn "CongressionalDistrict" ''Int
 
-stateFIPSFromTractGeoId :: TractGeoId -> StateFIPS
-stateFIPSFromTractGeoId tid = tid `div` 1000000000
+stateFIPSFromTractGeoId :: Int -> Int
+stateFIPSFromTractGeoId tgid = tgid `div` 1000000000
 
-countyFIPSFromTractGeoId :: TractId -> CountyFIPS
-countyFIPSFromTractGeoId = (tid `mod` 1000000) `div` 1000000
+countyFIPSFromTractGeoId :: Int -> Int
+countyFIPSFromTractGeoId tgid = (tgid `mod` 1000000) `div` 1000000
 
-countyGeoIdFromTractGeoId :: TractGeoId -> CountyGeoId
-countyGeoIdFromTractGeoId = tid `mod` 1000000
+countyGeoIdFromTractGeoId :: Int -> Int
+countyGeoIdFromTractGeoId tgid = tgid `mod` 1000000
 
-
+stateFIPSFromCountyGeoId :: Int -> Int
+stateFIPSFromCountyGeoId cgid = cgid `div` 1000
 
 data DistrictType = Congressional | StateUpper | StateLower deriving stock (Show, Enum, Bounded, Eq, Ord, Generic)
 
