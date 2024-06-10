@@ -24,6 +24,7 @@ module BlueRipple.Data.Types.Geographic
 import qualified BlueRipple.Data.Keyed         as K
 import Data.Discrimination (Grouping)
 import qualified Data.Text.Read as TR
+import qualified Data.Readable as Readable
 import qualified Data.Vector.Unboxed as UVec
 import Data.Vector.Unboxed.Deriving (derivingUnbox)
 import qualified Data.Vinyl as V
@@ -31,6 +32,7 @@ import qualified Flat
 import qualified Frames as F
 import qualified Frames.Streamly.InCore as FSI
 import qualified Frames.Streamly.TH as FTH
+import qualified Frames.Streamly.ColumnTypeable as FSC
 import qualified Frames.ShowCSV as FCSV
 import qualified Frames.Visualization.VegaLite.Data as FV
 import qualified Graphics.Vega.VegaLite as GV
@@ -65,6 +67,15 @@ stateFIPSFromCountyGeoId :: Int -> Int
 stateFIPSFromCountyGeoId cgid = cgid `div` 1000
 
 data DistrictType = Congressional | StateUpper | StateLower deriving stock (Show, Enum, Bounded, Eq, Ord, Generic)
+
+instance Readable.Readable DistrictType where
+  fromText "Congressional" = pure Congressional
+  fromText "StateUpper" = pure StateUpper
+  fromText "StateLower" = pure StateLower
+  fromText _ = mzero
+
+instance FSC.Parseable DistrictType where
+  parse = fmap FSC.Definitely . Readable.fromText
 
 instance Flat.Flat DistrictType
 instance Grouping DistrictType
