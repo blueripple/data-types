@@ -23,6 +23,7 @@ library
                  , BlueRipple.Data.Types.Modeling
   hs-source-dirs: src
   ghc-options: -Wall
+  default-extensions: StrictData
   build-depends:
         blueripple-data-tools
       , data-default >= 0.7 && < 0.8
