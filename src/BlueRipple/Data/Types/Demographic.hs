@@ -101,15 +101,17 @@ data MeanType = Arithmetic | Geometric
 data DensityWeightType = UnweightedDensity | PeopleWeightedDensity
 
 densityAndPopFld'' :: MeanType -> (r -> Double) -> (r -> Double) -> (r -> Double) -> (r -> Double) -> FL.Fold r (Double, Double)
-densityAndPopFld'' mt linearCombinationwgtF pplWgt pplF densityF = (,) <$> pplFld <*> wgtdDensFld
+densityAndPopFld'' mt linearCombinationwgtF pplWgt pplF densityF = (,) <$> lcPplFld <*> wgtdDensFld
   where
-    wgtdPpl r = pplWgt r * linearCombinationwgtF r * pplF r
-    wgtSumPplFld = FL.premap wgtdPpl FL.sum
-    wgtSumFld = FL.premap pplWgt FL.sum
-    pplFld = safeDiv <$> wgtSumPplFld <*> wgtSumFld
+    lcPpl r = linearCombinationwgtF r * pplF r
+    lcPplFld = FL.premap lcPpl FL.sum
+    wgtdPpl r = lcPpl r * pplWgt r
+    lcPplWgtdSumF f = safeDiv <$> FL.premap (\r -> wgtdPpl r * f r) FL.sum <*> FL.premap wgtdPpl FL.sum
+--    wgtSumFld = FL.premap pplWgt FL.sum
+--    pplFld = safeDiv <$> wgtSumPplFld <*> wgtSumFld
     wgtdDensFld = case mt of
-      Arithmetic -> safeDiv <$> (FL.premap (\r -> wgtdPpl r * densityF r) FL.sum) <*> wgtSumPplFld
-      Geometric -> fmap Numeric.exp (safeDiv <$> (FL.premap (\r -> safeWgtdLog (wgtdPpl r) (densityF r)) FL.sum) <*> wgtSumPplFld)
+      Arithmetic -> lcPplWgtdSumF densityF
+      Geometric -> fmap Numeric.exp (safeDiv <$> (FL.premap (\r -> safeWgtdLog (wgtdPpl r) (densityF r)) FL.sum) <*> FL.premap wgtdPpl FL.sum)
 {-# INLINEABLE densityAndPopFld'' #-}
 
 
