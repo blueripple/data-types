@@ -2,12 +2,8 @@ packages: ./
 jobs: 4
 with-compiler: ghc
 
-allow-newer: polysemy-zoo:ghc-prim, streamly-core
-           , freer-simple:template-haskell
+allow-newer: base, template-haskell, ghc-prim, bytestring, time, containers, constraints
            , foldl-statistics:hashable, foldl-statistics:profunctors
-           , cereal-time:time
-           , heidi:base
-           , generic-trie:base
 
 flags: +streamly9
 
@@ -20,4 +16,5 @@ import: ../cabal_repo_imports/Frames-utils.project
 import: ../cabal_repo_imports/Frames-hvega.project
 import: ../cabal_repo_imports/hvega-utils.project
 import: ../cabal_repo_imports/map-reduce-folds.project
+import: ../cabal_repo_imports/Frames-map-reduce.project
 import: ../cabal_repo_imports/heidi.project

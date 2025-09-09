@@ -26,7 +26,7 @@ library
   default-extensions: StrictData
   build-depends:
         blueripple-data-tools
-      , data-default >= 0.7 && < 0.8
+      , data-default >= 0.7 && < 0.9
       , discrimination >= 0.4 && < 0.6
       , Frames >= 0.7 && < 0.8
       , Frames-hvega >= 0.2 && < 0.4
@@ -44,8 +44,7 @@ library
       , vector >= 0.12 && < 0.14
       , vector-th-unbox >= 0.2 && < 0.3
       , vinyl >= 0.13 && < 0.15
-
   mixins:  base hiding (Prelude)
-         , relude (Relude as Prelude
-         , Relude.Extra)
+         , relude (Relude as Prelude)
+         , relude
   default-language: Haskell2010

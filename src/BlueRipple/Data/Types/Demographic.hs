@@ -735,6 +735,25 @@ type instance FSI.VectorFor Evangelical = UVec.Vector
 
 FTH.declareColumn "EvangelicalC" ''Evangelical
 
+{-
+data WhiteChristian = WC_WhiteChristian
+                    | WC_Other deriving stock (Show, Enum, Bounded, Eq, Ord, Generic)
+
+
+instance Flat.Flat WhiteChristian
+instance Grouping WhiteChristian
+instance K.FiniteSet WhiteChristian
+derivingUnbox "WhiteChristian"
+  [t|WhiteChristian -> Word8|]
+  [|toEnum . fromEnum|]
+  [|toEnum . fromEnum|]
+type instance FSI.VectorFor WhiteChristian = UVec.Vector
+
+FTH.declareColumn "WhiteChristianC" ''WhiteChristian
+-}
+
+
+
 type CatColsASER = '[SimpleAgeC, SexC, CollegeGradC, SimpleRaceC]
 catKeyASER :: SimpleAge -> Sex -> CollegeGrad -> SimpleRace -> F.Record CatColsASER
 catKeyASER a s e r = a F.&: s F.&: e F.&: r F.&: V.RNil
